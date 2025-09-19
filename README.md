@@ -1,19 +1,50 @@
-# Cómo crear una imagen de Docker para esta aplicación
+# Deployment de un servidor Node
 
 ## ¿Qué es un Dockerfile?
 
 Un `Dockerfile` es un archivo de texto que contiene todas las instrucciones necesarias para construir una imagen de Docker. Piensa en ello como una receta para crear el entorno y la configuración de tu aplicación.
 
-## Contenido del Dockerfile
+## 1. Creamos un archivo Dockerfile
 
-Aquí está el desglose de cada comando en el `Dockerfile` que hemos creado:
+En nuestro proyecto, crearemos un archivo llamado `Dockerfile` (sin extensión) en la raíz del directorio `server`. Este archivo contendrá las instrucciones para construir nuestra imagen de Docker.
+
+```ssh
+server/
+│
+├── controllers/
+│   ├── auth.controller.js
+│   ├── todo.controller.js
+│
+├── database/
+│   ├── db.js
+│ 
+├── models/
+│   ├── todo.model.js
+│   ├── user.model.js
+│
+├── routes/
+│   ├── auth.routes.js
+│   ├── todos.routes.js
+│
+├── index.js
+├── Dockerfile
+├── docker-compose.yml
+├── .env
+├── package-lock.json
+├── package.json
+```
+
+
+Una vez creas tu `Dockerfile` ingresas el siguiente código dentro de él:
+
+`usamos "alpine" porque es una versión de linux mucho más ligera que si simplemente usaramos la imagen de node` [aquí](https://github.com/nodejs/docker-node/tree/bee7dac041d0c0f2fb34e84236a7a72ccc9827b0) `tenemos la referencia`  
 
 ```dockerfile
 # Usa una imagen oficial de Node.js como imagen base
 FROM node:22-alpine
 
 # Establece el directorio de trabajo en el contenedor
-WORKDIR /usr/src/app
+WORKDIR /src/app
 
 # Copia package.json y package-lock.json al directorio de trabajo
 COPY package*.json ./
@@ -37,13 +68,13 @@ CMD ["node", "index.js"]
 
 2.  **`WORKDIR /usr/src/app`**: Establece el directorio de trabajo dentro del contenedor. Todos los comandos siguientes se ejecutarán en este directorio.
 
-3.  **`COPY package*.json ./`**: Copia los archivos `package.json` y `package-lock.json` al directorio de trabajo (`/usr/src/app`). Se copian primero para aprovechar el sistema de caché de Docker. Si estos archivos no cambian, Docker no volverá a instalar las dependencias en futuras construcciones.
+3.  **`COPY package*.json ./`**: Copia los archivos `package.json` y `package-lock.json` al directorio de trabajo (`/src/app`). Se copian primero para aprovechar el sistema de caché de Docker. Si estos archivos no cambian, Docker no volverá a instalar las dependencias en futuras construcciones.
 
 4.  **`RUN npm install --production`**: Ejecuta el comando `npm install` para descargar e instalar las dependencias necesarias para la aplicación. El flag `--production` asegura que solo se instalen las dependencias de producción y no las de desarrollo.
 
 5.  **`COPY . .`**: Copia todos los archivos restantes del proyecto al directorio de trabajo en el contenedor.
 
-6.  **`EXPOSE 5000`**: Informa a Docker que el contenedor escuchará en el puerto 5000 en tiempo de ejecución. Este es el puerto en el que se ejecuta la aplicación Node.js.
+6.  **`EXPOSE 3000`**: Informa a Docker que el contenedor escuchará en el puerto 3000 en tiempo de ejecución. Este es el puerto en el que se ejecuta la aplicación Node.js.
 
 7.  **`CMD ["npm", "start"]`**: Especifica el comando que se ejecutará cuando se inicie el contenedor. En este caso, inicia la aplicación ejecutando `node index.js`.
 
@@ -58,22 +89,49 @@ docker build -t todo-server-app .
 Para ejecutar la imagen en un contenedor:
 
 ```sh
-docker run -p 3000:3000 todo-server-app
+docker run -p 5000:3000 todo-server-app
 ```
 
-Ahora, tu aplicación debería estar corriendo y accesible en `http://localhost:3000`.
+Ahora, tu aplicación debería estar corriendo y accesible en `http://localhost:5000`.
 
 ## Gestión de la aplicación con Docker Compose
 
-Para simplificar la gestión de la aplicación y la base de datos, hemos añadido un archivo `docker-compose.yml`. Este archivo permite definir y ejecutar aplicaciones multi-contenedor con un solo comando.
+Para simplificar la gestión de la aplicación y la base de datos, vamos a a;adir un archivo `docker-compose.yml`. Este archivo permite definir y ejecutar aplicaciones multi-contenedor con un solo comando.
 
-### Contenido del `docker-compose.yml`
+### 2. Creamos un archivo `docker-compose.yml`
+
+Tu archivo `docker/compose.yml` debe tener el siguiente contenido
+
+```yml
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "5000:3000"
+    environment:
+      - WB_PORT=${WB_PORT}
+      - DB_STRING=${DB_STRING}
+    depends_on:
+      - mongo
+    env_file:
+      - .env 
+
+  mongo:
+    image: mongo
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  mongo-data:
+```
 
 El archivo define dos servicios:
 
 1.  **`app`**:
     *   Construye la imagen de Docker a partir del `Dockerfile` en el directorio actual.
-    *   Mapea el puerto `3000` del contenedor al puerto `3000` de tu máquina.
+    *   Mapea el puerto `5000` del contenedor al puerto `3000` de tu máquina.
     *   Establece las variables de entorno necesarias, incluyendo la cadena de conexión a la base de datos MongoDB, que apunta al servicio `mongo`.
     *   Depende del servicio `mongo`, lo que asegura que el contenedor de la base de datos se inicie antes que el de la aplicación.
 
@@ -120,7 +178,7 @@ Esto detendrá los contenedores de la aplicación y la base de datos. Si quieres
 docker-compose down -v
 ```
 
-## Cómo subir la imagen a Docker Hub
+## 3. Cómo subir la imagen a Docker Hub
 
 Una vez que hayas construido tu imagen de Docker, puedes subirla a [Docker Hub](https://hub.docker.com/) para compartirla con otros o para desplegarla en diferentes entornos como render.
 
@@ -129,7 +187,9 @@ Una vez que hayas construido tu imagen de Docker, puedes subirla a [Docker Hub](
 Si aún no tienes una cuenta en Docker Hub, deberás crear una:
 
 1.  Ve a [https://hub.docker.com/signup](https://hub.docker.com/signup).
+
 2.  Elige un nombre de usuario (Docker ID), proporciona una dirección de correo electrónico y una contraseña.
+
 3.  Completa el registro y verifica tu dirección de correo electrónico.
 
 Tu **Docker ID** será tu espacio de nombres en Docker Hub, donde se almacenarán tus imágenes.
