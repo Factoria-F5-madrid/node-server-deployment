@@ -164,3 +164,49 @@ docker push <tu-usuario-de-dockerhub>/todo-server-app:latest
 ```
 
 Una vez que el comando termine, tu imagen estará disponible en tu perfil de Docker Hub, en `https://hub.docker.com/r/<tu-usuario-de-dockerhub>/todo-server-app`.
+
+### Subir imagen a Render
+1. Creamos un servicio en Render
+
+<img width="1462" height="810" alt="image" src="https://github.com/user-attachments/assets/9338e4af-83ae-4897-8d00-24b8e324359b" />
+
+
+2. Agregaos la imagen de nuestro dockerhub
+
+<img width="1327" height="684" alt="image" src="https://github.com/user-attachments/assets/ae425511-112f-4983-b7d3-8e422f509082" />
+
+
+Ve a tu hub en docker hub, para eso, primero en cuentra la imágen con la letra de tu nombre o username, navega a tu perfil y allí verás esta vista:
+
+<img width="1891" height="803" alt="image" src="https://github.com/user-attachments/assets/9423d218-1749-4a06-86f8-b6588b8319f9" />
+
+entramos a nuestra imagen:
+
+<img width="1883" height="718" alt="image" src="https://github.com/user-attachments/assets/5c2aa70c-e98c-4fff-96bb-db82b489be19" />
+
+
+Buscamos la vista pública:
+
+<img width="1928" height="768" alt="image" src="https://github.com/user-attachments/assets/bc54f59f-d9ff-4ac0-9e2d-adcb7dd1d947" />
+
+copiamos la url:
+
+<img width="1677" height="892" alt="image" src="https://github.com/user-attachments/assets/ffc76304-34b2-4b4b-bd9b-7ba5b42bc8bb" />
+
+Agregamos nuestra imagen:
+
+<img width="1898" height="861" alt="image" src="https://github.com/user-attachments/assets/2c813a8b-2124-4217-821b-7cf418a7d35b" />
+
+3. configuramos render:
+
+Mantenemos las configuraciones, pero si quieres puedes cambiar el combre:
+
+<img width="1872" height="857" alt="image" src="https://github.com/user-attachments/assets/0fb63772-fc83-4f35-9669-9be923846048" />
+
+Bajamos un poco más, y seleccionamos el plan gratuito:
+
+<img width="1712" height="800" alt="image" src="https://github.com/user-attachments/assets/10d7d962-3ae1-41dc-b2c7-e876d8ac9081" />
+
+Agregamos nuestras variables de entorno:
+
+<img width="1823" height="484" alt="image" src="https://github.com/user-attachments/assets/b3c73a82-4fef-4180-bf3f-304f37c0668d" />
