@@ -13,9 +13,9 @@ Antes de comenzar, necesitamos:
 El flujo de trabajo de GitHub Actions necesita credenciales para iniciar sesión en Docker Hub. En lugar de usar nuestra contraseña, crearemos un Token de Acceso por seguridad.
 
 1.  Iniciamos sesión en Docker Hub.
-2.  Vamos a **Account Settings** -> **Security**.
-3.  Hacemos clic en **New Access Token**.
-4.  Le damos un nombre descriptivo (por ejemplo, `github-actions-token`) y le asignamos permisos de **Read & Write**.
+2.  Vamos a **Account Settings** -> **Personal access tokens**.
+3.  Hacemos clic en **Generate New Token**.
+4.  Le damos un nombre descriptivo (por ejemplo, `github-actions-token`) y le asignamos permisos de **Read, Write & Delete**.
 5.  Hacemos clic en **Generate**.
 6.  **¡Importante!** Copiamos el token y lo guardamos en un lugar seguro. No podremos volver a verlo después de cerrar esta ventana.
 
