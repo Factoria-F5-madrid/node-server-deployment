@@ -5,7 +5,7 @@ const router = express.Router()
 
 router.get("/", getTodos)
 router.get("/:id", getATodo)
-router.post("/", createTodo)
+router.post("/create", createTodo)
 router.put("/:id", updateTodo)
 router.delete("/:id", deleteTodo)
 
