@@ -2,10 +2,10 @@ import { Todo } from "../models/todo.model.js";
 
 export const getTodos = async (req, res) => {
     try {
-        const todos = await Todo.find()
+        const todos = [await Todo.find()]
         console.log(todos)
 
-        res.status(200).json(todos)
+        res.status(200).json({message: "Hola Render"})
     } catch (error) {
         res.status(500).json({message: "oh no! something went wrong!"})
     }
